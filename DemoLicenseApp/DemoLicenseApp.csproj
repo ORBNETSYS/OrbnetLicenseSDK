@@ -33,8 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OrbnetLicenseSDK">
-      <HintPath>..\Packages\OrbnetLicenseSDK\OrbnetLicenseSDK.dll</HintPath>
+    <Reference Include="OrbnetLicenseSDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\OrbnetLicenseSDK\OrbnetLicenseSDK.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

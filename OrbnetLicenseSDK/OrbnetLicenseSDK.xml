@@ -1,0 +1,207 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>OrbnetLicenseSDK</name>
+    </assembly>
+    <members>
+        <member name="T:OrbnetLicenseSDK.License">
+            <summary>
+            Abstract class containing the minimum information needed to genererate, validate and store ORBNET licenses.
+            </summary>
+        </member>
+        <member name="P:OrbnetLicenseSDK.License.ClientName">
+            <summary>
+            The client name should be set by the client or can be set using the license validator.
+            </summary>
+        </member>
+        <member name="P:OrbnetLicenseSDK.License.DaysAllowed">
+            <summary>
+            Set this value when generating the initial license file to control how long the client can use the software.
+            Can be set to "-1" to remove the time limitation. 
+            </summary>
+        </member>
+        <member name="P:OrbnetLicenseSDK.License.ClientId">
+            <summary>
+            This is a unique GUID generated when the license is first created. It is useful to know whether or not a client has deleted his license and tried to send you a new one.
+            </summary>
+        </member>
+        <member name="P:OrbnetLicenseSDK.License.MachineId">
+            <summary>
+            The Machine ID is a hash of specific serial numbers and data related to the BIOS.
+            </summary>
+        </member>
+        <member name="P:OrbnetLicenseSDK.License.Hash">
+            <summary>
+            This hash calculated using all the fields in your custom license and is calculated when validating the license.
+            </summary>
+        </member>
+        <member name="P:OrbnetLicenseSDK.License.ClientNumber">
+            <summary>
+            This is actually the unix timestamp of when the license was created.
+            This value should be recovered from the registry when creating a new license so that the trial cannot restart when a client deletes his license. 
+            </summary>
+        </member>
+        <member name="M:OrbnetLicenseSDK.License.Serialize">
+            <summary>
+            Override this method to serialize your custom license to an XML string.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:OrbnetLicenseSDK.License.GenerateMachineId">
+            <summary>
+            Fills in the MachineId field with an ID unique to the machine.
+            </summary>
+        </member>
+        <member name="M:OrbnetLicenseSDK.License.SaveLicense(System.String)">
+            <summary>
+            Encrypts the output of the "Serialize()" method and saves it to a file. 
+            </summary>
+            <param name="path">The path where to encrypted license will be saved.</param>
+        </member>
+        <member name="T:OrbnetLicenseSDK.Validator">
+            <summary>
+            This static class handle license validation, file encryption and generating the machine ID using the BIOS.
+            This class must be initialized using the "InitLicenseValidator" method with a valid product key as a parameter.
+            </summary>      
+        </member>
+        <member name="T:OrbnetLicenseSDK.Validator.LicenseTier">
+            <summary>
+            When initializing the license, you get an indication on the type of 
+            </summary>       
+        </member>
+        <member name="F:OrbnetLicenseSDK.Validator.LicenseTier.Invalid">
+            <summary>
+            The product key is not valid.
+            </summary>
+        </member>
+        <member name="F:OrbnetLicenseSDK.Validator.LicenseTier.Trial">
+            <summary>
+            Demo our licensing software for 5 minutes. 
+            The product key, Master Key and encryption key is 00000000-0000-0000-0000-000000000000 (Guid.Empty) which means anyone can decrypt and validate your trial licenses.
+            </summary>
+        </member>
+        <member name="F:OrbnetLicenseSDK.Validator.LicenseTier.TierI">
+            <summary>
+            Tier I
+            <para>•	Licensing for one product. Your Master Key is your Product Key.</para>
+            <para>•	ORBNET webserver validates all your licenses.</para>    
+            </summary>
+        </member>
+        <member name="F:OrbnetLicenseSDK.Validator.LicenseTier.TierII">
+            <summary>
+            Tier II
+            <para>•	Up to 10 product licenses.</para>
+            <para>•	2 year support included.</para>
+            <para>•	ORBNET webserver validates all your licenses.</para>      
+            </summary>
+        </member>
+        <member name="F:OrbnetLicenseSDK.Validator.LicenseTier.TierIII">
+            <summary>
+            Tier III
+            <para>•	Create as many licenses types as you want.</para>
+            <para>•	Validate the licenses yourself.</para>
+            <para>•	2 year support included.</para>
+            <para>•	No connection to ORBNET servers required.</para>
+            </summary>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.InitLicenseValidator(System.String)">
+            <summary>
+            Initializes the Orbnet Licensing SDK with a purchased product key.
+            Use the trial key "00000000-0000-0000-0000-000000000000" for a 10 minute test. When the test ends, all the methods in this class will throw an exception.
+            </summary>
+            <param name="productKey"></param>
+            <returns></returns>     
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.SetMasterKey(System.Guid)">
+            <summary>
+            Set the Master Key. This is what is used to create the unique hash for your custom license.
+            When setting the MasterKey, the encryption key and initialization vector used to encrypt the license file are automatically generated with the Master Key.
+            You also set the encryption key and initialization vector manually.
+            The Master Key must be the same in your client application as in the license validator.
+            </summary>
+            <param name="masterKey"></param>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.SetEncryptionKey(System.String)">
+            <summary>
+            Set the 256 bit Encryption Key used to encrypt the serialized license file. The key must be 32 character string.  
+            </summary>
+            <param name="encryptionKey"></param>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.SetEncryptionIV(System.String)">
+            <summary>
+            Set the 128 bit Initialization Vector used in combination with the Encryption key used to encrypt the serialized license file. The Initialization Vector must be 16 character string.  
+            </summary>
+            <param name="encryptionIV"></param>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.CheckLicenseHash(OrbnetLicenseSDK.License)">
+            <summary>
+            Checks if the license has is valid and has not been tampered with. Does not check the unique machine ID
+            </summary>
+            <param name="license"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.CheckLicense(OrbnetLicenseSDK.License,System.String)">
+            <summary>
+            Checks a machineID against the machineID of the license and verifies the validity of the license hash. 
+            </summary>
+            <param name="license"></param>
+            <param name="machineID"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.ValidateLicense(OrbnetLicenseSDK.License)">
+            <summary>
+            Provided you have purchased a Tier III license, this method allows you to validate your custom licenses by adding a valid hash to the license.
+            </summary>
+            <param name="license"></param>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.GetDaysLeft(OrbnetLicenseSDK.License,System.Int64)">
+            <summary>
+            Gets the number of days left by checking the license against a provided timestamp
+            </summary>
+            <param name="license"></param>
+            <param name="timestamp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.GetDaysLeft(OrbnetLicenseSDK.License)">
+            <summary>
+            Gets the number of days left using the unix timestamp hidden in the license.
+            </summary>
+            <param name="license"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.GetTimeLeft(OrbnetLicenseSDK.License)">
+            <summary>
+            Returns a TimeSpan of how much time is left in the license trial period.
+            </summary>
+            <param name="license"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.GetTimeLeftReadableString(OrbnetLicenseSDK.License)">
+            <summary>
+            Gets the time left of the trial period in a readable format dd.hh.mm.ss
+            </summary>
+            <param name="license"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.Decrypt(System.String)">
+            <summary>
+            Decrypts the license file text using the encryption key and initialization vector.
+            </summary>
+            <param name="cipherText"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.CreateMD5(System.String)">
+            <summary>
+            Returns a standard MD5 hash of the input string.
+            </summary>
+            <param name="input"></param>
+            <returns></returns>
+        </member>
+        <member name="M:OrbnetLicenseSDK.Validator.GetUniqueMachineId">
+            <summary>
+            Gets a unique machine hash from various fields contained in the BIOS of the localhost.
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
