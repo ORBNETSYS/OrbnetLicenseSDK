@@ -40,7 +40,7 @@ namespace DemoLicenseAppWPF
             {
                 try
                 {
-                    License = DemoLicense.GetLicense(pathToFile);                  
+                    License = DemoLicense.GetLicenseFromFile(pathToFile);                  
 
                     if (Validator.CheckLicense(License, Validator.GetUniqueMachineId()))
                     {
@@ -67,7 +67,7 @@ namespace DemoLicenseAppWPF
           
             if (License == null)
             {
-                License = DemoLicense.GetLicense(DemoLicense.LicenseFilePath);
+                License = DemoLicense.GetLicenseFromFile(DemoLicense.LicenseFilePath);
             }
 
             if (License == null) 
@@ -78,7 +78,7 @@ namespace DemoLicenseAppWPF
 
             SaveFileDialog dlg = new SaveFileDialog();
 
-            dlg.FileName = $"License{DemoLicense.LicenseFileExtention}";
+            dlg.FileName = $"License{DemoLicense.LicenseFileExtention}r";
             dlg.Filter = $"{DemoLicense.LicenseFileDescription} request files (*{DemoLicense.LicenseFileExtention}r)|*{DemoLicense.LicenseFileExtention}r|All files (*.*)|*.*";
             dlg.FilterIndex = 2;
             dlg.RestoreDirectory = true;

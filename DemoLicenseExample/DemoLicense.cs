@@ -22,6 +22,39 @@ namespace DemoLicenseExample
         /// The name of your company. This is used to create keys in the registry and files in the AppData folder 
         /// </summary>
         public static readonly string CompanyName = "ORBNET SYSTEMS LTD";
+
+        public static void InitializeSDK()
+        {
+            //SDK Initializtion. Paste your product key here to activate. 
+            string key = Guid.Empty.ToString();
+            var tier = Validator.InitLicenseValidator(key);
+            if (tier == Validator.LicenseTier.Invalid)
+            {
+                WriteLog($"Product key is not valid.");
+                return;
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
+            //Tier II & Tier III PRODUCT KEYS ONLY
+            //
+            //Set a different Master Key for each different kind of product license
+            //Automatically sets the encryption key and initialization vector using the Master Key
+            //
+            //Validator.SetMasterKey(Guid.Parse("139f19ff-69cb-4ba6-b5ec-0d846d3685f0"));
+            //--------------------------------------------------------------------------------------------------
+            //Set a different encryption key and initialization vector if you do not want to use the MasterKey.     
+            //
+            //Validator.SetEncryptionKey("djdh47fh56dt34tigliserti3er456tz");
+            //Validator.SetEncryptionIV("sjf467edrt90nchr");
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            WriteLog($"Product key Tier is {tier}");
+            if (tier == Validator.LicenseTier.Trial) 
+            {
+                WriteLog($"License SDK will work for 5 minutes before it starts throwing exceptions.");
+            }
+        }
+
         /// <summary>
         /// The name of your applicaiton. This is used to create keys in the registry and files in the AppData folder 
         /// </summary>
@@ -57,12 +90,12 @@ namespace DemoLicenseExample
         //Use component models to make all your variables appear easilly in .NET property grids.
         [DisplayName("a. Demo bool value"), Category("2. Extra Variables"), Description("A bool value to use in your license software.")]
         public bool DemoBoolValue { get; set; }
-        [DisplayName("a. Demo int value"), Category("2. Extra Variables"), Description("A integer value to use in your license software.")]
+        [DisplayName("b. Demo int value"), Category("2. Extra Variables"), Description("A integer value to use in your license software.")]
         public int DemoIntValue { get; set; }
-        [DisplayName("b. Demo float value"), Category("2. Extra Variables"), Description("A float value to use in your license software.")]
+        [DisplayName("c. Demo float value"), Category("2. Extra Variables"), Description("A float value to use in your license software.")]
         public float DemoFloatValue { get; set; }      
 
-        [DisplayName("a. Demo Enum"), Category("3. Choice Variables")]
+        [ReadOnly(true), DisplayName("a. Demo Enum"), Category("3. Choice Variables")]
         public DemoEnum DemoEnumChoice { get; set; }
         public enum DemoEnum 
         { 
@@ -404,7 +437,7 @@ namespace DemoLicenseExample
             }
         }
 
-        public static DemoLicense GetLicense(string filepath)
+        public static DemoLicense GetLicenseFromFile(string filepath)
         {
             try
             {
@@ -412,7 +445,19 @@ namespace DemoLicenseExample
                 {
                     throw new IOException("File does not exits");
                 }
-                return Deserialize(Validator.Decrypt(File.ReadAllText(filepath)));
+                return GetLicenseFromCipher(File.ReadAllText(filepath));
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static DemoLicense GetLicenseFromCipher(string CipherString)
+        {
+            try
+            {               
+                return Deserialize(Validator.Decrypt(CipherString));
             }
             catch
             {

@@ -58,6 +58,13 @@
             </summary>
             <param name="path">The path where to encrypted license will be saved.</param>
         </member>
+        <member name="M:OrbnetLicenseSDK.License.GetLicenseCipher">
+            <summary>
+            Returns an encrypted string of the license.
+            Use the "Validator.Decrypt()" function to get license in XML format.
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:OrbnetLicenseSDK.Validator">
             <summary>
             This static class handle license validation, file encryption and generating the machine ID using the BIOS.

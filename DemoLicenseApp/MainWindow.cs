@@ -15,36 +15,15 @@ namespace DemoLicenseApp
         {
             InitializeComponent();
 
-            //SDK Initializtion. Paste your product key here to activate. 
-            string key = Guid.Empty.ToString();
-            if (Validator.InitLicenseValidator(key) == Validator.LicenseTier.Invalid)
-            {
-                WriteLog($"Product key is not valid.");
-                return;
-            }
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-            //Tier II & Tier III PRODUCT KEYS ONLY
-            //
-            //Set a different Master Key for each different kind of product license
-            //Automatically sets the encryption key and initialization vector using the Master Key
-            //
-            //Validator.SetMasterKey(Guid.Parse("139f19ff-69cb-4ba6-b5ec-0d846d3685f0"));
-            //--------------------------------------------------------------------------------------------------
-            //Set a different encryption key and initialization vector if you do not want to use the MasterKey.     
-            //
-            //Validator.SetEncryptionKey("djdh47fh56dt34tigliserti3er456tz");
-            //Validator.SetEncryptionIV("sjf467edrt90nchr");
-            ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
             DemoLicense.LicenseTrialTerminated += DemoLicense_LicenseTrialTerminated;
-            DemoLicense.LicenseLogEntry += DemoLicense_LicenseLogEntry;            
+            DemoLicense.LicenseLogEntry += DemoLicense_LicenseLogEntry;
+
+            DemoLicense.InitializeSDK();                     
 
             try
             {
                 WriteLog($"Attempting to load license from {DemoLicense.LicenseFilePath}");
-                _license = DemoLicense.GetLicense(DemoLicense.LicenseFilePath);
+                _license = DemoLicense.GetLicenseFromFile(DemoLicense.LicenseFilePath);
 
                 if (_license != null)
                 {
@@ -91,7 +70,7 @@ namespace DemoLicenseApp
         {
             try
             {
-                var lic = DemoLicense.GetLicense(DemoLicense.LicenseFilePath);
+                var lic = DemoLicense.GetLicenseFromFile(DemoLicense.LicenseFilePath);
                 if (lic == null)
                 {
                     //Get timestamp from registry to avoid re-starting the trial
@@ -136,7 +115,7 @@ namespace DemoLicenseApp
         {
             try
             {
-                var lic = DemoLicense.GetLicense(DemoLicense.LicenseFilePath);
+                var lic = DemoLicense.GetLicenseFromFile(DemoLicense.LicenseFilePath);
                 if (lic == null)
                 {
                     MessageBox.Show("Error! No license found. Please create a license first.");
@@ -170,7 +149,7 @@ namespace DemoLicenseApp
 
         private void GetTimeleftTimer_Tick(object sender, EventArgs e)
         {
-            _license = DemoLicense.GetLicense(DemoLicense.LicenseFilePath);
+            _license = DemoLicense.GetLicenseFromFile(DemoLicense.LicenseFilePath);
             if (_license == null)
             {
                 Lb_TimeLeft.Text = "PLEASE CREATE A LICENSE FILE";

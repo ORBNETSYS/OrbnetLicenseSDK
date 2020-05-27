@@ -49,7 +49,7 @@ namespace DemoLicenseValidator
                 try
                 {
                     path = file.FileName;
-                    License = DemoLicense.GetLicense(path);
+                    License = DemoLicense.GetLicenseFromFile(path);
                     propertyGrid1.SelectedObject = License;
                   
                     return;
