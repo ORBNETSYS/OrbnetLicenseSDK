@@ -113,8 +113,8 @@ namespace DemoLicenseValidator
         private void button_CheckHash_Click(object sender, EventArgs e)
         {
             if (License == null) return;   
-
-            if (Validator.CheckLicense(License, License.MachineId))
+            
+            if (Validator.CheckLicenseHash(License))
             {
                 MessageBox.Show("License hash is VALID");               
             }

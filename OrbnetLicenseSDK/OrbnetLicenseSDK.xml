@@ -142,14 +142,14 @@
         </member>
         <member name="M:OrbnetLicenseSDK.Validator.CheckLicenseHash(OrbnetLicenseSDK.License)">
             <summary>
-            Checks if the license has is valid and has not been tampered with. Does not check the unique machine ID
+            Checks if the license hash is valid and has not been tampered with. Does not check the unique machine ID
             </summary>
             <param name="license"></param>
             <returns></returns>
         </member>
         <member name="M:OrbnetLicenseSDK.Validator.CheckLicense(OrbnetLicenseSDK.License,System.String)">
             <summary>
-            Checks a machineID against the machineID of the license and verifies the validity of the license hash. 
+            Checks the machineID of localhost against the machineID of the license and verifies the validity of the license hash. 
             </summary>
             <param name="license"></param>
             <param name="machineID"></param>
